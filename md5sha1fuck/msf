@@ -1,0 +1,37 @@
+#!/bin/bash
+if [ ! -f "$1" ];then
+	exit 1
+fi
+sum="$(echo "$(md5 < "$1")$(sha1sum < "$1")" | awk '{print $1}')"
+code=""
+for ((loop=0; loop<${#sum}; loop++));do
+	now="${sum:$loop:1}"
+	case "$now" in
+		[0-1])
+			code="${code}."
+			;;
+		[2-3])
+			code="${code},"
+			;;
+		[4-5])
+			code="${code}+"
+			;;
+		[6-7])
+			code="${code}-"
+			;;
+		[8-9])
+			code="${code}>"
+			;;
+		[a-b])
+			code="${code}<"
+			;;
+		[c-d])
+			code="${code}["
+			;;
+		[e-f])
+			code="${code}]"
+			;;
+	esac
+done
+# echo "$code"
+brainfuck <<< "$code"
